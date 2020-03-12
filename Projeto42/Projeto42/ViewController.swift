@@ -8,35 +8,38 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
-    @IBOutlet var botaoMedio: UIButton!
-    @IBOutlet var botaoGrande: UIButton!
     @IBOutlet var yearsTextField: UITextField!
     @IBOutlet var monthsTextField: UITextField!
     @IBOutlet var resultLabel: UILabel!
+    @IBOutlet var sizepicker: UIPickerView!
+    
+    let portes: [String] = ["Pequeno", "Médio", "Grande"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let duke: Cachorro
-        duke = Cachorro(anos: 7, meses: 4, tamanho: "médio")
-        print(duke.anos, duke.meses, duke.porte)
+        sizepicker.dataSource = self
+        sizepicker.delegate = self
     }
     
-    @IBAction func tocouBotao(_ sender: UIButton) {
-        let years: Int
+    @IBAction func tapButton(_ sender: Any) {
+        let linhaSelecionada: Int = sizepicker.selectedRow(inComponent: 0)
+        let porteSelecionado = portes[linhaSelecionada]
         
-        if sender == botaoMedio  {
-            years = transformarAnosCaninosEmHumanos(porte:"médio")
+        let years: Int
+        if porteSelecionado == "Médio" {
+            years = transformarAnosCaninosEmHumanos(porte: "médio")
         }
-        else if sender == botaoGrande {
-            years = transformarAnosCaninosEmHumanos(porte:"grande")
+        else if porteSelecionado == "Pequeno" {
+            years = transformarAnosCaninosEmHumanos(porte: "pequeno")
         }
         else {
-            years = transformarAnosCaninosEmHumanos(porte:"pequeno")
+            years = transformarAnosCaninosEmHumanos(porte: "grande")
         }
+        
         exibir(resultado: years)
     }
     
@@ -66,6 +69,18 @@ class ViewController: UIViewController {
         
         // Exibe os labels de resultado e o botão de recãocular
         resultLabel.text = yearsString
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return portes.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return portes[row]
     }
 }
 
